@@ -1,3 +1,7 @@
+procstat
+core*
+*.swp
+
 # Compiled Object files
 *.slo
 *.lo
