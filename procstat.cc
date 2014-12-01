@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cctype>
 #include <csignal>
+#include <cstring>
 #include <getopt.h>
 
 #include "./global.h"
@@ -171,8 +172,15 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 
-	if (signal(SIGINT, sigint_handler) == SIG_ERR) {
-		perror("signal");
+	struct sigaction sa;
+	memset(&sa, 0, sizeof(sa));
+	sa.sa_handler = sigint_handler;
+	if (sigemptyset(&sa.sa_mask) == -1) {
+		perror("sigemptyset");
+		exit(1);
+	}
+	if (sigaction(SIGINT, &sa, NULL) == -1) {
+		perror("sigaction");
 		exit(1);
 	}
 
