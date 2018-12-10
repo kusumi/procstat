@@ -12,13 +12,14 @@
 #include "./log.h"
 
 namespace {
-	Mutex _mutex;
-	Thread _thread;
-	typedef std::map<int, Window*> _map_t;
-	_map_t _map;
+Mutex _mutex;
+Thread _thread;
+typedef std::map<int, Window*> _map_t;
+_map_t _map;
 }
 
-Container::Container(int argc, char *argv[]) {
+Container::Container(int argc, char *argv[])
+{
 	_build_window();
 	for (int i = 0; i < argc; i++) {
 		char *p = argv[i];
@@ -36,7 +37,8 @@ Container::Container(int argc, char *argv[]) {
 	(*_it)->focus(true);
 }
 
-Container::~Container(void) {
+Container::~Container(void)
+{
 	for (_map_t::iterator it = _map.begin(); it != _map.end(); it++)
 		delete_watch(it->first);
 	while (!_v.empty()) {
@@ -46,7 +48,8 @@ Container::~Container(void) {
 	}
 }
 
-void Container::_goto_next_window(void) {
+void Container::_goto_next_window(void)
+{
 	std::vector<Window*>::iterator it = _it;
 	(*_it)->focus(false);
 	do {
@@ -57,7 +60,8 @@ void Container::_goto_next_window(void) {
 	(*_it)->focus(true);
 }
 
-void Container::_goto_prev_window(void) {
+void Container::_goto_prev_window(void)
+{
 	std::vector<Window*>::iterator it = _it;
 	(*_it)->focus(false);
 	do {
@@ -68,14 +72,16 @@ void Container::_goto_prev_window(void) {
 	(*_it)->focus(true);
 }
 
-void Container::_build_window(void) {
+void Container::_build_window(void)
+{
 	if (!rotatecol)
 		_build_window_xy();
 	else
 		_build_window_yx();
 }
 
-void Container::_build_window_xy(void) {
+void Container::_build_window_xy(void)
+{
 	int seq = 0;
 	int xx = get_terminal_cols();
 	int yy = get_terminal_lines();
@@ -104,7 +110,8 @@ void Container::_build_window_xy(void) {
 	}
 }
 
-void Container::_build_window_yx(void) {
+void Container::_build_window_yx(void)
+{
 	int seq = 0;
 	int yy = get_terminal_lines();
 	int xx = get_terminal_cols();
@@ -133,7 +140,8 @@ void Container::_build_window_yx(void) {
 	}
 }
 
-void Container::_alloc_window(int seq, int ylen, int xlen, int ypos, int xpos) {
+void Container::_alloc_window(int seq, int ylen, int xlen, int ypos, int xpos)
+{
 	try {
 		Window *p = _v.at(seq);
 		p->resize(ylen, xlen, ypos, xpos);
@@ -144,7 +152,8 @@ void Container::_alloc_window(int seq, int ylen, int xlen, int ypos, int xpos) {
 	}
 }
 
-void Container::parse_event(int x) {
+void Container::parse_event(int x)
+{
 	Window *p = *_it;
 	switch (x) {
 	case KBD_ERR:
@@ -196,30 +205,36 @@ _signal:
 	p->signal();
 }
 
+#ifdef USE_C_LINKAGE
 extern "C" {
-	void *watch_thread_handler(void *arg) {
-		log("thread=%lu", get_thread_id());
-		while (!interrupted) {
-			watch_res r;
-			if (read_watch(r) > 0) {
-				for (watch_res::iterator it = r.begin();
-					it != r.end(); it++) {
-					Window *p = _map[it->first];
-					switch (it->second) {
-					case WATCH_MODIFY:
-						p->update_buffer();
-						break;
-					}
+#endif
+static void *watch_thread_handler(void *arg)
+{
+	log("thread=%lu", get_thread_id());
+	while (!interrupted) {
+		watch_res r;
+		if (read_watch(r) > 0) {
+			for (watch_res::iterator it = r.begin(); it != r.end();
+				it++) {
+				Window *p = _map[it->first];
+				switch (it->second) {
+				case WATCH_MODIFY:
+					p->update_buffer();
+					break;
 				}
-				flash_terminal();
 			}
-			_mutex.timedwait(1, 0);
+			flash_terminal();
 		}
-		return 0;
+		_mutex.timedwait(1, 0);
 	}
+	return 0;
 }
+#ifdef USE_C_LINKAGE
+}
+#endif
 
-int Container::thread_create(void) {
+int Container::thread_create(void)
+{
 	int ret = _thread.create(watch_thread_handler, 0);
 	if (ret) {
 		log("create thread failed %d", ret);
@@ -229,21 +244,24 @@ int Container::thread_create(void) {
 	for (size_t i = 0; i < _v.size(); i++) {
 		ret = _v[i]->create();
 		if (ret) {
-			log("window=%p create thread failed %d", _v[i], ret);
+			log("window=%p create thread failed %d",
+				static_cast<void*>(_v[i]), ret);
 			return ret;
 		}
 	}
 	return 0;
 }
 
-void Container::thread_join(void) {
+void Container::thread_join(void)
+{
 	int ret;
 	for (size_t i = 0; i < _v.size(); i++)
 		_v[i]->signal();
 	for (size_t i = 0; i < _v.size(); i++) {
 		ret = _v[i]->join();
 		if (ret)
-			log("window=%p join thread failed %d", _v[i], ret);
+			log("window=%p join thread failed %d",
+				static_cast<void*>(_v[i]), ret);
 	}
 
 	_mutex.signal();

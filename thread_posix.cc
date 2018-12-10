@@ -3,19 +3,22 @@
 #include <sys/time.h>
 #endif
 
-#include "./thread.h"
+#include "./thread_posix.h"
 
 pthread_mutex_t __mutex;
 
-int init_lock(void) {
+int init_lock(void)
+{
 	return pthread_mutex_init(&__mutex, 0);
 }
 
-int cleanup_lock(void) {
+int cleanup_lock(void)
+{
 	return pthread_mutex_destroy(&__mutex);
 }
 
-int Mutex::timedwait(time_t s, long n) {
+int Mutex::timedwait(time_t s, long n)
+{
 	struct timespec ts;
 #ifdef USE_GETTIMEOFDAY
 	struct timeval tv;

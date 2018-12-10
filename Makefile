@@ -1,8 +1,23 @@
 CC	= g++
 TARGET	= procstat
-SRCS	= procstat.cc thread.cc container.cc window.cc panel.cc buffer.cc
+SRCS	= main.cc container.cc window.cc panel.cc buffer.cc
 CFLAGS	= -Wall
-LIBS	= -lpthread
+LIBS	=
+
+USE_NATIVETHREAD	?= 0
+ifeq ($(USE_NATIVETHREAD), 1)
+	CFLAGS	+= -std=c++11 -DUSE_NATIVETHREAD
+	SRCS	+= thread_native.cc
+	#LIBS	+= -lpthread # may need this
+else
+	SRCS	+= thread_posix.cc
+	LIBS	+= -lpthread
+endif
+
+PEDANTIC	?= 0
+ifeq ($(PEDANTIC), 1)
+	CFLAGS	+= -pedantic
+endif
 
 DEBUG	?= 0
 ifeq ($(DEBUG), 1)
@@ -24,7 +39,8 @@ endif
 USE_INOTIFY	?= 1
 ifeq ($(USE_INOTIFY), 1)
 	SRCS	+= watch.cc
-	CFLAGS	+= -DUSE_INOTIFY
+else
+	CFLAGS	+= -DNO_USE_INOTIFY
 endif
 
 USE_GETTIMEOFDAY	?= 0

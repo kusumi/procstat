@@ -7,16 +7,17 @@
 #include "./watch.h"
 
 namespace {
-	int fd = -1;
-	std::vector<char> buf;
+int fd = -1;
+std::vector<char> buf;
 
-	void expand_buffer(int n) {
-		buf.resize(buf.size() +
-			n * (sizeof(struct inotify_event) + 256));
-	}
+void expand_buffer(int n)
+{
+	buf.resize(buf.size() + n * (sizeof(struct inotify_event) + 256));
+}
 }
 
-int init_watch(bool nonblock) {
+int init_watch(bool nonblock)
+{
 	fd = inotify_init();
 	if (fd == -1)
 		return -1;
@@ -30,25 +31,29 @@ int init_watch(bool nonblock) {
 	return 0;
 }
 
-int cleanup_watch(void) {
+int cleanup_watch(void)
+{
 	return close(fd);
 }
 
-int add_watch(const char *path) {
+int add_watch(const char *path)
+{
 	int ret = inotify_add_watch(fd, path, IN_MODIFY);
 	if (ret != -1)
 		expand_buffer(1);
 	return ret;
 }
 
-int delete_watch(int wd) {
+int delete_watch(int wd)
+{
 	int ret = inotify_rm_watch(fd, wd);
 	if (ret != -1)
 		expand_buffer(-1);
 	return ret;
 }
 
-int read_watch(watch_res &r) {
+int read_watch(watch_res &r)
+{
 	char *p = &buf[0];
 	int ret = read(fd, p, buf.size());
 	if (ret == -1) {

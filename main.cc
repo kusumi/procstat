@@ -21,8 +21,8 @@ volatile sig_atomic_t interrupted = 0;
 std::vector<int> layout;
 time_t sinterval = 0;
 long ninterval = 0;
-short fgcolor = -1;
-short bgcolor = -1;
+short fgcolor = -1; // default color
+short bgcolor = -1; // default color
 bool showlnum = false;
 bool foldline = false;
 bool blinkline = true;
@@ -30,59 +30,72 @@ bool rotatecol = false;
 bool usedelay = false;
 
 namespace {
-	std::string _layout;
-	bool _usemsec = false;
-	const char *_what = 0;
+std::string _layout;
+bool _usemsec = false;
+const char *_what = 0;
 
-	void sigint_handler(int) {
-		interrupted = 1;
-	}
-
-	void atexit_handler(void) {
-		cleanup_screen();
-		cleanup_watch();
-		cleanup_log();
-		cleanup_lock();
-		if (_what)
-			std::cerr << _what << std::endl;
-	}
-
-	void usage(const char *arg) {
-		std::cerr << "Usage: " << arg << " [options] /proc/...\n"
-		<< "Options:\n"
-		<< "\t-c <arg> - Set column layout."
-		<< " e.g. -c 123 makes 3 columns with 1,2,3 windows for each\n"
-		<< "\t-t <arg> - Set refresh interval in second. Default is 1."
-		<< " e.g. -t 5 makes it refresh every 5 seconds\n"
-		<< "\t-m - Take refresh interval as milli second."
-		<< " e.g. -t 500 -m makes it refresh evety 500 milli seconds\n"
-		<< "\t-n - Show line number\n"
-		<< "\t-f - Fold line to the next when longer than the window width\n"
-		<< "\t-r - Rotate column layout\n"
-		<< "\t-h - This option\n"
-		<< "\t--fg <arg> - Set foreground color to"
-		<< " [black|red|green|yellow|blue|magenta|cyan|white]\n"
-		<< "\t--bg <arg> - Set background color to"
-		<< " [black|red|green|yellow|blue|magenta|cyan|white]\n"
-		<< "\t--noblink - Disable blink\n"
-		<< "\t--usedelay - Add random delay time before each window starts\n"
-		<< std::endl
-		<< "Commands:\n"
-		<< "\t0 - Set current position to the first line of the buffer\n"
-		<< "\t$ - Set current position to the last line of the buffer\n"
-		<< "\tk|UP - Scroll upward\n"
-		<< "\tj|DOWN - Scroll downward\n"
-		<< "\th|LEFT - Select next window\n"
-		<< "\tl|RIGHT - Select previous window\n"
-		<< "\tCTRL-b - Scroll one page upward\n"
-		<< "\tCTRL-u - Scroll half page upward\n"
-		<< "\tCTRL-f - Scroll one page downward\n"
-		<< "\tCTRL-d - Scroll half page downward\n"
-		<< "\tCTRL-l - Repaint whole screen\n";
-	}
+void sigint_handler(int n)
+{
+	interrupted = 1;
 }
 
-int main(int argc, char *argv[]) {
+void atexit_handler(void)
+{
+	cleanup_screen();
+	cleanup_watch();
+	cleanup_log();
+	cleanup_lock();
+	if (_what)
+		std::cerr << _what << std::endl;
+}
+
+void usage(const char *arg)
+{
+	std::cerr << "Usage: " << arg << " [options] /proc/..." << std::endl
+		<< "Options:" << std::endl
+		<< "\t-c <arg> - Set column layout."
+		<< " e.g. \"-c 123\" to make 3 columns with 1,2,3 windows for each"
+		<< std::endl
+		<< "\t-t <arg> - Set refresh interval in second. Default is 1."
+		<< " e.g. \"-t 5\" to refresh screen every 5 seconds"
+		<< std::endl
+		<< "\t-m - Take refresh interval as milli second."
+		<< " e.g. \"-t 500 -m\" to refresh screen every 500 milli seconds"
+		<< std::endl
+		<< "\t-n - Show line number" << std::endl
+		<< "\t-f - Fold lines when longer than window width"
+		<< std::endl
+		<< "\t-r - Rotate column layout" << std::endl
+		<< "\t-h - This option" << std::endl
+		<< "\t--fg <arg> - Set foreground color. Available colors are "
+		<< "\"black\", \"blue\", \"cyan\", \"green\", \"magenta\", \"red\", \"white\", \"yellow\"."
+		<< std::endl
+		<< "\t--bg <arg> - Set background color. Available colors are "
+		<< "\"black\", \"blue\", \"cyan\", \"green\", \"magenta\", \"red\", \"white\", \"yellow\"."
+		<< std::endl
+		<< "\t--noblink - Disable blink" << std::endl
+		<< "\t--usedelay - Add random delay time before each window starts"
+		<< std::endl
+		<< std::endl
+		<< "Commands:" << std::endl
+		<< "\t0 - Set current position to the first line of the buffer"
+		<< std::endl
+		<< "\t$ - Set current position to the last line of the buffer"
+		<< std::endl
+		<< "\tk|UP - Scroll upward" << std::endl
+		<< "\tj|DOWN - Scroll downward" << std::endl
+		<< "\th|LEFT - Select next window" << std::endl
+		<< "\tl|RIGHT - Select previous window" << std::endl
+		<< "\tCTRL-b - Scroll one page upward" << std::endl
+		<< "\tCTRL-u - Scroll half page upward" << std::endl
+		<< "\tCTRL-f - Scroll one page downward" << std::endl
+		<< "\tCTRL-d - Scroll half page downward" << std::endl
+		<< "\tCTRL-l - Repaint whole screen" << std::endl;
+}
+}
+
+int main(int argc, char *argv[])
+{
 	int i, c;
 	struct option lo[] = {
 		{"fg", 1, 0, 'F'},

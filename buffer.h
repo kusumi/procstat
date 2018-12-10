@@ -9,7 +9,7 @@
 
 class Buffer {
 public:
-	Buffer(std::string);
+	explicit Buffer(std::string);
 	~Buffer(void) { _ifs.close(); }
 	std::string get_path(void) { return _path; }
 	int get_max_line(void);
