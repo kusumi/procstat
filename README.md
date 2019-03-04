@@ -1,4 +1,4 @@
-procstat (v0.1.3)
+procstat (v0.1.4)
 ========
 
 ## About
@@ -15,7 +15,7 @@ procstat (v0.1.3)
 
 + Compile with std::thread (experimental).
 
-        $ make USE_NATIVETHREAD=1
+        $ make USE_STDTHREAD=1
 
 ## Usage
 

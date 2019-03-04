@@ -1,5 +1,5 @@
-#ifndef __THREAD_NATIVE_H__
-#define __THREAD_NATIVE_H__
+#ifndef __THREAD_STD_H__
+#define __THREAD_STD_H__
 
 #include <thread>
 #include <mutex>

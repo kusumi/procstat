@@ -21,8 +21,6 @@ volatile sig_atomic_t interrupted = 0;
 std::vector<int> layout;
 time_t sinterval = 0;
 long ninterval = 0;
-short fgcolor = -1; // default color
-short bgcolor = -1; // default color
 bool showlnum = false;
 bool foldline = false;
 bool blinkline = true;
@@ -32,6 +30,8 @@ bool usedelay = false;
 namespace {
 std::string _layout;
 bool _usemsec = false;
+short fgcolor = -1; // default color
+short bgcolor = -1; // default color
 const char *_what = 0;
 
 void sigint_handler(int n)
@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
 	}
 	for (size_t i = 0; i < _layout.size(); i++) {
 		int x = toupper(_layout[i]);
-		if (x >= '0' && x <= '9')
+		if (x >= '1' && x <= '9')
 			layout.push_back(x - '0');
 		else if (x >= 'A' && x <= 'F')
 			layout.push_back(x - 'A' + 10);

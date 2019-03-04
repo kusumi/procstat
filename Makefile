@@ -4,10 +4,10 @@ SRCS	= main.cc container.cc window.cc panel.cc buffer.cc
 CFLAGS	= -Wall
 LIBS	=
 
-USE_NATIVETHREAD	?= 0
-ifeq ($(USE_NATIVETHREAD), 1)
-	CFLAGS	+= -std=c++11 -DUSE_NATIVETHREAD
-	SRCS	+= thread_native.cc
+USE_STDTHREAD	?= 0
+ifeq ($(USE_STDTHREAD), 1)
+	CFLAGS	+= -std=c++11 -DUSE_STDTHREAD
+	SRCS	+= thread_std.cc
 	#LIBS	+= -lpthread # may need this
 else
 	SRCS	+= thread_posix.cc

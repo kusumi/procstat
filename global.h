@@ -11,8 +11,6 @@ extern volatile sig_atomic_t interrupted;
 extern std::vector<int> layout;
 extern time_t sinterval;
 extern long ninterval;
-extern short fgcolor;
-extern short bgcolor;
 extern bool showlnum;
 extern bool foldline;
 extern bool blinkline;
