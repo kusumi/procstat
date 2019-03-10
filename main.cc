@@ -53,44 +53,44 @@ void usage(const char *arg)
 {
 	std::cerr << "Usage: " << arg << " [options] /proc/..." << std::endl
 		<< "Options:" << std::endl
-		<< "\t-c <arg> - Set column layout."
+		<< "  -c <arg> - Set column layout."
 		<< " e.g. \"-c 123\" to make 3 columns with 1,2,3 windows for each"
 		<< std::endl
-		<< "\t-t <arg> - Set refresh interval in second. Default is 1."
+		<< "  -t <arg> - Set refresh interval in second. Default is 1."
 		<< " e.g. \"-t 5\" to refresh screen every 5 seconds"
 		<< std::endl
-		<< "\t-m - Take refresh interval as milli second."
+		<< "  -m - Take refresh interval as milli second."
 		<< " e.g. \"-t 500 -m\" to refresh screen every 500 milli seconds"
 		<< std::endl
-		<< "\t-n - Show line number" << std::endl
-		<< "\t-f - Fold lines when longer than window width"
+		<< "  -n - Show line number" << std::endl
+		<< "  -f - Fold lines when longer than window width"
 		<< std::endl
-		<< "\t-r - Rotate column layout" << std::endl
-		<< "\t-h - This option" << std::endl
-		<< "\t--fg <arg> - Set foreground color. Available colors are "
+		<< "  -r - Rotate column layout" << std::endl
+		<< "  -h - This option" << std::endl
+		<< "  --fg <arg> - Set foreground color. Available colors are "
 		<< "\"black\", \"blue\", \"cyan\", \"green\", \"magenta\", \"red\", \"white\", \"yellow\"."
 		<< std::endl
-		<< "\t--bg <arg> - Set background color. Available colors are "
+		<< "  --bg <arg> - Set background color. Available colors are "
 		<< "\"black\", \"blue\", \"cyan\", \"green\", \"magenta\", \"red\", \"white\", \"yellow\"."
 		<< std::endl
-		<< "\t--noblink - Disable blink" << std::endl
-		<< "\t--usedelay - Add random delay time before each window starts"
+		<< "  --noblink - Disable blink" << std::endl
+		<< "  --usedelay - Add random delay time before each window starts"
 		<< std::endl
 		<< std::endl
 		<< "Commands:" << std::endl
-		<< "\t0 - Set current position to the first line of the buffer"
+		<< "  0 - Set current position to the first line of the buffer"
 		<< std::endl
-		<< "\t$ - Set current position to the last line of the buffer"
+		<< "  $ - Set current position to the last line of the buffer"
 		<< std::endl
-		<< "\tk|UP - Scroll upward" << std::endl
-		<< "\tj|DOWN - Scroll downward" << std::endl
-		<< "\th|LEFT - Select next window" << std::endl
-		<< "\tl|RIGHT - Select previous window" << std::endl
-		<< "\tCTRL-b - Scroll one page upward" << std::endl
-		<< "\tCTRL-u - Scroll half page upward" << std::endl
-		<< "\tCTRL-f - Scroll one page downward" << std::endl
-		<< "\tCTRL-d - Scroll half page downward" << std::endl
-		<< "\tCTRL-l - Repaint whole screen" << std::endl;
+		<< "  k|UP - Scroll upward" << std::endl
+		<< "  j|DOWN - Scroll downward" << std::endl
+		<< "  h|LEFT - Select next window" << std::endl
+		<< "  l|RIGHT - Select previous window" << std::endl
+		<< "  CTRL-b - Scroll one page upward" << std::endl
+		<< "  CTRL-u - Scroll half page upward" << std::endl
+		<< "  CTRL-f - Scroll one page downward" << std::endl
+		<< "  CTRL-d - Scroll half page downward" << std::endl
+		<< "  CTRL-l - Repaint whole screen" << std::endl;
 }
 }
 

@@ -45,15 +45,15 @@ int init_screen(short fg, short bg)
 	wtimeout(stdscr, 500);
 	clear_terminal();
 
-	if (has_colors() == FALSE)
-		return -3;
-	if (start_color() == ERR)
-		return -4;
-	if (use_default_colors() == ERR)
-		return -5;
-	if (init_pair(1, fg, bg) == ERR)
-		return -6;
-	color_attr = COLOR_PAIR(1);
+	if (has_colors() == TRUE) {
+		if (start_color() == ERR)
+			return -4;
+		if (use_default_colors() == ERR)
+			return -5;
+		if (init_pair(1, fg, bg) == ERR)
+			return -6;
+		color_attr = COLOR_PAIR(1);
+	}
 
 	const char *env = getenv("TERM");
 	if (env && !strcmp(env, "screen"))
